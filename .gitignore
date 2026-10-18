@@ -5,6 +5,3 @@ outputs*/
 data/
 *.pt
 .DS_Store
-
-# local notes, not published
-CLAUDE.md
