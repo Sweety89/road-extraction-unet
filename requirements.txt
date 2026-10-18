@@ -1,0 +1,5 @@
+torch>=2.3
+segmentation-models-pytorch>=0.3
+opencv-python>=4.8
+numpy
+pandas
