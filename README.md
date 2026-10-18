@@ -16,17 +16,29 @@ The data comes under DeepGlobe's own licence: don't re-upload the dataset to Git
 ## Run on Kaggle (recommended: free GPU)
 
 1. Create a new Kaggle notebook. In **Add Input**, search "deepglobe road extraction" and add it.
-2. Turn on a GPU accelerator and internet access in the notebook's settings. Internet is needed
-   to download the pretrained encoder. Kaggle asks for phone verification before allowing either.
+2. In the notebook's settings, choose the **T4** GPU accelerator and turn internet on.
+   Internet is needed to download the pretrained encoder. Kaggle asks for phone
+   verification before allowing either. Avoid the P100: recent PyTorch builds no longer
+   ship kernels for it, which shows up as `CUDA error: no kernel image is available`.
 3. In the first cell, type `%%writefile train_roads.py` on the first line, paste the whole
    script below it, and run the cell. This saves the script inside the notebook.
-4. Run:
+4. Check the GPU in a throwaway cell, then delete the cell:
+   ```
+   import torch; print(torch.cuda.is_available())    # must print True
+   ```
+5. Leave exactly three cells: the `%%writefile` cell, then
    ```
    !pip install -q segmentation-models-pytorch
-   !python train_roads.py --epochs 1          # first, time one epoch
-   !python train_roads.py --epochs 15         # then the real run
    ```
-5. Download `outputs/metrics.json`, `history.csv` and `predictions.png` from the output panel.
+   then
+   ```
+   !python train_roads.py --epochs 10 --workers 4
+   ```
+6. Click **Save Version → Save & Run All**. This runs as a background job, so it survives
+   closing the tab or the laptop sleeping; an interactive cell would be stopped when the
+   session goes idle.
+7. When the version finishes, download `outputs/metrics.json`, `history.csv` and
+   `predictions.png` from that version's **Output** tab.
 
 Each epoch prints its time, so you can choose how many epochs fit in your GPU quota.
 
