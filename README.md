@@ -15,29 +15,18 @@ The data comes under DeepGlobe's own licence: don't re-upload the dataset to Git
 
 ## Run on Kaggle (recommended: free GPU)
 
-1. Create a new Kaggle notebook. In **Add Input**, search "deepglobe road extraction" and add it.
-2. In the notebook's settings, choose the **T4** GPU accelerator and turn internet on.
-   Internet is needed to download the pretrained encoder. Kaggle asks for phone
-   verification before allowing either. Avoid the P100: recent PyTorch builds no longer
-   ship kernels for it, which shows up as `CUDA error: no kernel image is available`.
-3. In the first cell, type `%%writefile train_roads.py` on the first line, paste the whole
-   script below it, and run the cell. This saves the script inside the notebook.
-4. Check the GPU in a throwaway cell, then delete the cell:
-   ```
-   import torch; print(torch.cuda.is_available())    # must print True
-   ```
-5. Leave exactly three cells: the `%%writefile` cell, then
-   ```
-   !pip install -q segmentation-models-pytorch
-   ```
-   then
-   ```
-   !python train_roads.py --epochs 10 --workers 4
-   ```
-6. Click **Save Version → Save & Run All**. This runs as a background job, so it survives
+1. On Kaggle, **Create → New Notebook**, then **File → Import Notebook** and upload
+   [`kaggle_train.ipynb`](kaggle_train.ipynb). It installs the one missing package, fetches
+   `train_roads.py` from this repo and runs 10 epochs.
+2. **Add Input**: search "deepglobe road extraction" and add it.
+3. **Settings**: choose the **T4** GPU accelerator and turn internet on (needed for the
+   pretrained encoder). Kaggle asks for phone verification before allowing either. Avoid
+   the P100: recent PyTorch builds no longer ship kernels for it, which shows up as
+   `CUDA error: no kernel image is available`.
+4. Click **Save Version → Save & Run All**. This runs as a background job, so it survives
    closing the tab or the laptop sleeping; an interactive cell would be stopped when the
-   session goes idle.
-7. When the version finishes, download `outputs/metrics.json`, `history.csv` and
+   session goes idle. The first cell stops the run at once if no GPU is attached.
+5. When the version finishes, download `outputs/metrics.json`, `history.csv` and
    `predictions.png` from that version's **Output** tab.
 
 Each epoch prints its time, so you can choose how many epochs fit in your GPU quota.
